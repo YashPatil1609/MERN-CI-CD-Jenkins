@@ -53,6 +53,8 @@ pipeline{
                         sh 'git config --global user.name "jenkins"'
                         
                         sh 'git remote set-url origin https://${USER}:${PASS}@github.com/YashPatil1609/MERN-CI-CD-Workflow.git'
+                        sh 'git branch --set-upstream-to=origin/main main'
+
                         sh 'git add .'
                         sh 'git commit -m "Incremented application versions"'
                         sh 'git push origin main'
