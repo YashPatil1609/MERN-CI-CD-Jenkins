@@ -1,5 +1,8 @@
 pipeline{
     agent any
+    environment{
+        DOCKER_HUB_USER = "yashpatil16"
+    }
     stages{
         stage("Increment application versions"){
             steps{
@@ -20,10 +23,27 @@ pipeline{
                     echo "Backend Version: ${env.BACKEND_VERSION}"
 
                 }
-                
-                
             }
         }
+        }
+        stage("Building Docker images and pushing them to dockerhub"){
+            steps{
+                script{
+                    echo "Building Docker images and pushing them to dockerhub..."
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'env.DOCKER_HUB_USER', passwordVariable: 'PASSWORD')]){
+                        dir('./mern/frontend'){
+                            sh "docker build -t ${DOCKER_HUB_USER}/mern-frontend:${env.FRONTEND_VERSION} ."
+                            sh "docker login -u ${DOCKER_HUB_USER} -p $PASSWORD"
+                            sh "docker push ${DOCKER_HUB_USER}/mern-frontend:${env.FRONTEND_VERSION}"
+                        }
+                        dir('./mern/backend'){
+                            sh "docker build -t ${DOCKER_HUB_USER}/mern-backend:${env.BACKEND_VERSION} ."
+                            sh "docker login -u ${DOCKER_HUB_USER} -p $PASSWORD"
+                            sh "docker push ${DOCKER_HUB_USER}/mern-backend:${env.BACKEND_VERSION}"
+                        }
+                    }
+                }
+            }
+        }        
     }
-}
 }
