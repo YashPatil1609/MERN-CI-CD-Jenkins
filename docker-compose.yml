@@ -1,21 +1,21 @@
 services:
   frontend:
-    build: ./mern/frontend
+    
       
     ports:
       - "5173:5173"
-    image: yashpatil16/mern-frontend:latest
+    image: ${FRONTEND_IMAGE}
     networks:
       - mern
     
    
 
   backend:
-    build: ./mern/backend
+    
       
     ports:
       - "5050:5050"
-    image: yashpatil16/mern-backend:latest
+    image: ${BACKEND_IMAGE}
     networks:
       - mern
     

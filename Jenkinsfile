@@ -58,8 +58,30 @@ pipeline{
                         sh 'git add .'
                         sh 'git commit -m "Incremented application versions"'
 
-                // Push the changes to the remote repository
+                
                         sh 'git push origin HEAD:main'
+                    }
+                }
+            }
+        }
+        stage("Deploying to the Server"){
+            steps{
+                script{
+                    sshAgent(['ec2-server-key']){
+                        // Copy the docker-compose file to the EC2 instance
+                        sh '''
+                            scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@3.107.196.93:/home/ubuntu/docker-compose.yml
+                        '''
+
+                // Execute docker-compose commands on the EC2 instance
+                        sh '''
+                            ssh -o StrictHostKeyChecking=no ubuntu@3.107.196.93 << EOF
+                            export FRONTEND_IMAGE=${DOCKER_HUB_USER}/mern-frontend:${env.FRONTEND_VERSION}
+                            export BACKEND_IMAGE=${DOCKER_HUB_USER}/mern-backend:${env.BACKEND_VERSION}
+                            cd /home/ubuntu
+                            docker-compose up -d
+                            EOF
+                        '''
                     }
                 }
             }
