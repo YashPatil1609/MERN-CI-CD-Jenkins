@@ -33,12 +33,12 @@ pipeline{
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'env.DOCKER_HUB_USER', passwordVariable: 'PASSWORD')]){
                         dir('./mern/frontend'){
                             sh "docker build -t ${DOCKER_HUB_USER}/mern-frontend:${env.FRONTEND_VERSION} ."
-                            sh "docker login -u ${DOCKER_HUB_USER} -p $PASSWORD"
+                            sh "echo $PASSWORD | docker login -u ${DOCKER_HUB_USER} --password-stdin"
                             sh "docker push ${DOCKER_HUB_USER}/mern-frontend:${env.FRONTEND_VERSION}"
                         }
                         dir('./mern/backend'){
                             sh "docker build -t ${DOCKER_HUB_USER}/mern-backend:${env.BACKEND_VERSION} ."
-                            sh "docker login -u ${DOCKER_HUB_USER} -p $PASSWORD"
+                            sh "echo $PASSWORD | docker login -u ${DOCKER_HUB_USER} --password-stdin"
                             sh "docker push ${DOCKER_HUB_USER}/mern-backend:${env.BACKEND_VERSION}"
                         }
                     }
