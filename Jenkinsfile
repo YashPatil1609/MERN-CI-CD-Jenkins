@@ -32,14 +32,14 @@ pipeline{
                     echo "Building Docker images and pushing them to dockerhub..."
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', usernameVariable: 'env.DOCKER_HUB_USER', passwordVariable: 'PASSWORD')]){
                         dir('./mern/frontend'){
-                            sh "docker build -t ${DOCKER_HUB_USER}/mern-frontend:${env.FRONTEND_VERSION} ."
+                            sh "docker build -t ${DOCKER_HUB_USER}/mernfrontend:${env.FRONTEND_VERSION} ."
                             sh "echo $PASSWORD | docker login -u ${DOCKER_HUB_USER} --password-stdin"
-                            sh "docker push ${DOCKER_HUB_USER}/mern-frontend:${env.FRONTEND_VERSION}"
+                            sh "docker push ${DOCKER_HUB_USER}/mernfrontend:${env.FRONTEND_VERSION}"
                         }
                         dir('./mern/backend'){
-                            sh "docker build -t ${DOCKER_HUB_USER}/mern-backend:${env.BACKEND_VERSION} ."
+                            sh "docker build -t ${DOCKER_HUB_USER}/mernbackend:${env.BACKEND_VERSION} ."
                             sh "echo $PASSWORD | docker login -u ${DOCKER_HUB_USER} --password-stdin"
-                            sh "docker push ${DOCKER_HUB_USER}/mern-backend:${env.BACKEND_VERSION}"
+                            sh "docker push ${DOCKER_HUB_USER}/mernbackend:${env.BACKEND_VERSION}"
                         }
                     }
                 }
@@ -67,21 +67,20 @@ pipeline{
         stage("Deploying to the Server"){
             steps{
                 script{
-                    sshAgent(['ec2-server-key']){
+                    sshagent(['ec2-server-key']){
                         // Copy the docker-compose file to the EC2 instance
-                        sh '''
-                            scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@3.107.196.93:/home/ubuntu/docker-compose.yml
-                        '''
+                        sh 'scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@3.107.196.93:/home/ubuntu/docker-compose.yml'
+                        
 
                 // Execute docker-compose commands on the EC2 instance
-                        sh '''
-                            ssh -o StrictHostKeyChecking=no ubuntu@3.107.196.93 << EOF
-                            export FRONTEND_IMAGE=${DOCKER_HUB_USER}/mern-frontend:${env.FRONTEND_VERSION}
-                            export BACKEND_IMAGE=${DOCKER_HUB_USER}/mern-backend:${env.BACKEND_VERSION}
-                            cd /home/ubuntu
-                            docker-compose up -d
-                            EOF
-                        '''
+                        
+                        sh 'ssh -o StrictHostKeyChecking=no ubuntu@3.107.196.93'
+                        sh "export FRONTEND_IMAGE=${DOCKER_HUB_USER}/mernfrontend:${env.FRONTEND_VERSION}"
+                        sh "export BACKEND_IMAGE=${DOCKER_HUB_USER}/mernbackend:${env.BACKEND_VERSION}"
+                        
+                        sh 'docker-compose up -d'
+                            
+                        
                     }
                 }
             }
