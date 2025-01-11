@@ -44,6 +44,21 @@ pipeline{
                     }
                 }
             }
-        }        
+        } 
+        stage("Commiting version update"){
+            steps{
+                script{
+                    withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'USER', passwordVariable: 'PASS')]){
+                        sh 'git config --global user.email "jenkins@example.com"'
+                        sh 'git config --global user.name "jenkins"'
+                        
+                        sh 'git remote set-url origin https://${USER}:${PASS}@github.com/YashPatil1609/MERN-CI-CD-Workflow.git'
+                        sh 'git add .'
+                        sh 'git commit -m "Incremented application versions"'
+                        sh 'git push origin main'
+                    }
+                }
+            }
+        }       
     }
 }
