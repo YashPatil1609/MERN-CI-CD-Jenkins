@@ -67,18 +67,12 @@ pipeline{
         stage("Deploying to the Server"){
             steps{
                 script{
+                    def shellCmd = "bash ./startup-script.sh ${FRONTEND_VERSION} ${BACKEND_VERSION}"
                     sshagent(['ec2-server-key']){
-                        // Copy the docker-compose file to the EC2 instance
-                        sh 'scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@3.107.196.93:/home/ubuntu/docker-compose.yml'
-                        
-
-                // Execute docker-compose commands on the EC2 instance
-                        
-                        sh 'ssh -o StrictHostKeyChecking=no ubuntu@3.107.196.93'
-                        sh "export FRONTEND_IMAGE=${DOCKER_HUB_USER}/mernfrontend:${env.FRONTEND_VERSION}"
-                        sh "export BACKEND_IMAGE=${DOCKER_HUB_USER}/mernbackend:${env.BACKEND_VERSION}"
-                        
-                        sh 'docker-compose up -d'
+                        sh 'scp -o StrictHostKeyChecking=no startup-script.sh ubuntu@3.27.192.100:/home/ubuntu'
+                        sh 'scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@3.27.192.100:/home/ubuntu'
+                        sh "ssh -o StrictHostKeyChecking=no ubuntu@3.27.192.100 ${shellCmd}"
+                       
                             
                         
                     }
