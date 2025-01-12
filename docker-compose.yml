@@ -4,7 +4,7 @@ services:
       
     ports:
       - "5173:5173"
-    image: ${FRONTEND_IMAGE}
+    image: yashpatil16/mernfrontend:${FRONTEND_IMAGE}
     networks:
       - mern
     
@@ -15,7 +15,7 @@ services:
       
     ports:
       - "5050:5050"
-    image: ${BACKEND_IMAGE}
+    image: yashpatil16/mernbackend:${BACKEND_IMAGE}
     networks:
       - mern
     
