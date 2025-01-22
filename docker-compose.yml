@@ -12,7 +12,7 @@ services:
 
   backend:
     environment:
-      MONGO_URI: mongodb://mongo:27017/mydatabase
+      MONGO_URI: mongodb://mongo:27017/employees
     
     ports:
       - "5050:5050"
