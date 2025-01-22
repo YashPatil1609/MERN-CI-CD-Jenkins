@@ -1,25 +1,24 @@
 services:
   frontend:
-    
-      
     ports:
       - "5173:5173"
     image: yashpatil16/mernfrontend:${FRONTEND_IMAGE}
     networks:
       - mern
+    environment:
+      REACT_APP_API_URL: http://backend:5050
     
    
 
   backend:
+    environment:
+      MONGO_URI: mongodb://mongo:27017/mydatabase
     
-      
     ports:
       - "5050:5050"
     image: yashpatil16/mernbackend:${BACKEND_IMAGE}
     networks:
       - mern
-    
-
     depends_on:
       - mongodb
 
