@@ -9,5 +9,7 @@ I have created a Jenkins pipeline which when triggered, increments the applicati
 
 For detailed information and execution steps, please refer to my [blog post](https://yashpatilofficial.hashnode.dev/building-a-robust-cicd-pipeline-using-jenkins-for-a-mern-stack-application) and on [dev.to](https://dev.to/yash_patil16/building-a-robust-cicd-pipeline-using-jenkins-for-a-mern-stack-application-592c) where I provide step-by-step instructions and insights into each stage of the pipeline setup.
 
+Checkout the same pipeline setup using [GitHub-Actions](https://github.com/YashPatil1609/MERN-CICD-ActionsWorkflow)
+
 
 
